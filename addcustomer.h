@@ -18,8 +18,10 @@ class AddCustomer : public QDialog
     Q_OBJECT
 
 public:
-    explicit AddCustomer(QWidget *parent = 0, MainWindow *mW = 0, QString purpose = NULL);
+    explicit AddCustomer(QWidget *parent = 0, MainWindow *mW = 0, Customer *sentCustomer = NULL, QString purpose = NULL);
     ~AddCustomer();
+
+    void setFormFields(Customer *customer);
 
 private slots:
     void on_applyPushButton_clicked();
@@ -28,6 +30,7 @@ private:
     Ui::AddCustomer *ui;
     MainWindow *_mainWindow;
     QString _purpose;
+    Customer *_sentCustomer;
 
 };
 

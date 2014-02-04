@@ -147,14 +147,40 @@ QString DatabaseManager::addCustomer(Customer customer) {
     return NULL;
 }
 
-QString DatabaseManager::updateCustomer(Customer customer) {
+Customer *DatabaseManager::getCustomerByName(QString cName) {
+
+    Customer *retrievedCustomer = new Customer();
+    QSqlQuery qry;
+
+    if(db.isOpen() == false)
+        return NULL;
+
+    if( qry.exec("select * from customer where companyName='"+cName+"' ")) {
+
+        while(qry.next())
+        {
+            retrievedCustomer->setId(qry.value(0).toInt());
+            retrievedCustomer->setCompanyName(qry.value(1).toString());
+            retrievedCustomer->setFirstName(qry.value(2).toString());
+            retrievedCustomer->setLastName(qry.value(3).toString());
+            retrievedCustomer->setPhoneNumber(qry.value(4).toString());
+        }
+
+    } else {
+        return NULL;
+    }
+
+    return retrievedCustomer;
+}
+
+QString DatabaseManager::updateCustomer(Customer customer, QString origName) {
 
     QSqlQuery qry;
 
     if(db.isOpen() == false)
         return "The databse is not open";
 
-    if(! qry.exec("update customer set companyName='"+customer.getCompanyName()+"', firstName='"+customer.getFirstName()+"', lastName='"+customer.getLastName()+"', phoneNumber='"+customer.getPhoneNumber()+"' where companyId='"+customer.getId()+"' "))
+    if(! qry.exec("update customer set companyName='"+customer.getCompanyName()+"', firstName='"+customer.getFirstName()+"', lastName='"+customer.getLastName()+"', phoneNumber='"+customer.getPhoneNumber()+"' where companyName='"+origName+"' "))
     {
         return qry.lastError().text();
     }

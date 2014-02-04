@@ -31,13 +31,15 @@ public:
     QVector<Invoice> _allInvcoies;
 
     bool addCustomerToList(Customer customer);
-    bool editCustomer(Customer customer);
+    bool editCustomer(Customer customer, QString origName);
     void showError(QString errMsg);
 
 private slots:
     void on_tableTabWidget_tabCloseRequested(int index);
     void on_pushButton_addCustomer_pressed();
     void on_pushButton_editCustomer_clicked();
+
+    void on_listView_doubleClicked(const QModelIndex &index);
 
 private:
     Ui::MainWindow *ui;

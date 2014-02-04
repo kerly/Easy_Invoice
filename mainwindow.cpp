@@ -40,11 +40,11 @@ MainWindow::MainWindow(QWidget *parent) :
         _invoiceModel = _dbManager.loadInvoiceTable();
 
         if(_invoiceModel != NULL) {
-            ui->listView->setModel(_invoiceModel);
-            ui->statusBar->showMessage("Successfully loaded customer list");
+            ui->tableView->setModel(_invoiceModel);
+            ui->statusBar->showMessage("Successfully loaded invoice table");
         } else {
-            QMessageBox::critical(this, tr("Database Error"), "The database could not load the customer list: \n" + messageResult);
-            ui->statusBar->showMessage("Database: Load customer list unsuccessful");
+            QMessageBox::critical(this, tr("Database Error"), "The database could not load the invoice table: \n" + messageResult);
+            ui->statusBar->showMessage("Database: Load invoice table unsuccessful");
         }
 
     }
@@ -85,9 +85,9 @@ bool MainWindow::addCustomerToList(Customer customer) {
 
 }
 
-bool MainWindow::editCustomer(Customer customer) {
+bool MainWindow::editCustomer(Customer customer, QString origName) {
 
-    QString messageResult = _dbManager.updateCustomer(customer);
+    QString messageResult = _dbManager.updateCustomer(customer, origName);
     if( messageResult != NULL)
     {
 
@@ -98,6 +98,7 @@ bool MainWindow::editCustomer(Customer customer) {
     } else {
 
         ui->statusBar->showMessage("Successfully updated \"" + customer.getCompanyName() + "\" info in the databse");
+        ui->tableTabWidget->removeTab(ui->tableTabWidget->currentIndex());
     }
 
     return true;
@@ -117,7 +118,7 @@ void MainWindow::on_tableTabWidget_tabCloseRequested(int index)
 void MainWindow::on_pushButton_addCustomer_pressed()
 {
     // Add a new tab where the user can input a new customer
-    QWidget *addCustomer = new AddCustomer(0, this, "Add");
+    QWidget *addCustomer = new AddCustomer(0, this, NULL, "Add");
     ui->tableTabWidget->setCurrentIndex(ui->tableTabWidget->addTab(addCustomer, tr("Add New Company")));
 }
 
@@ -125,6 +126,27 @@ void MainWindow::on_pushButton_addCustomer_pressed()
 void MainWindow::on_pushButton_editCustomer_clicked()
 {
     // Add a new tab where the user can input a new customer
-    QWidget *addCustomer = new AddCustomer(0, this, "Apply Edits");
-    ui->tableTabWidget->setCurrentIndex(ui->tableTabWidget->addTab(addCustomer, tr("Edit Company Fields")));
+    QAbstractItemModel *model = ui->listView->model();
+    QString cNameFromList = model->data(ui->listView->currentIndex(), Qt::DisplayRole).toString();
+    Customer *customer = _dbManager.getCustomerByName(cNameFromList);
+
+    if(customer != NULL) {
+        QWidget *editCustomer = new AddCustomer(0, this, customer ,"Apply Edits");
+        ui->tableTabWidget->setCurrentIndex(ui->tableTabWidget->addTab(editCustomer, tr("Edit Company Fields")));
+
+    } else {
+        QMessageBox::critical(this, tr("Error"), "Cannot edit customer: \"" + cNameFromList + "\" ");
+        ui->statusBar->showMessage("Could not edit customer: \"" + cNameFromList + "\" ");
+    }
+}
+
+void MainWindow::on_listView_doubleClicked(const QModelIndex &index)
+{
+    // Open the company invoice tab
+    QAbstractItemModel *model = ui->listView->model();
+    QString cNameFromList = model->data(index, Qt::DisplayRole).toString();
+    Customer *customer = _dbManager.getCustomerByName(cNameFromList);
+
+    QWidget *customerInvoiceTab = new AllCompanyInvoices(0, this, customer);
+    ui->tableTabWidget->setCurrentIndex(ui->tableTabWidget->addTab(customerInvoiceTab, customer->getCompanyName() + " Invoices"));
 }

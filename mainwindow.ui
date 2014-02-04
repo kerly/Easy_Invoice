@@ -586,7 +586,7 @@ QCheckBox::indicator:disabled, QRadioButton::indicator:disabled
          </spacer>
         </item>
         <item>
-         <widget class="QLineEdit" name="lineEdit">
+         <widget class="QLineEdit" name="searchBox_lineEdit">
           <property name="sizePolicy">
            <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
             <horstretch>0</horstretch>
