@@ -21,11 +21,11 @@ SOURCES += main.cpp\
     databasemanager.cpp
 
 HEADERS  += mainwindow.h \
-    addcustomer.h \
     invoice.h \
     customer.h \
     allcompanyinvoices.h \
-    databasemanager.h
+    databasemanager.h \
+    addcustomer.h
 
 FORMS    += mainwindow.ui \
     addcustomer.ui \

@@ -5,6 +5,7 @@
 #include "customer.h"
 
 #include <QDialog>
+#include <QMessageBox>
 
 class MainWindow;
 class Customer;

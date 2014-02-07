@@ -6,6 +6,7 @@
 #include "customer.h"
 
 #include <QDialog>
+#include <QSqlQueryModel>
 
 class MainWindow;
 class Customer;
@@ -23,9 +24,15 @@ public:
     explicit AllCompanyInvoices(QWidget *parent = 0, MainWindow *mW = 0, Customer *customer = NULL);
     ~AllCompanyInvoices();
 
+    void loadCustomerInvoices();
+
+private slots:
+    void on_pushButton_addInvoices_pressed();
+
 private:
     Ui::AllCompanyInvoices *ui;
     MainWindow *_mainWindow;
+    QSqlQueryModel *_invoiceModel;
     Customer *_customer;
 };
 

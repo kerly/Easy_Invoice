@@ -29,6 +29,13 @@ void AddCustomer::setFormFields(Customer *customer) {
     ui->firstNameLineEdit->setText(customer->getFirstName());
     ui->lastNameLineEdit->setText(customer->getLastName());
     ui->phoneNumberLineEdit->setText(customer->getPhoneNumber());
+
+    if(_purpose == "DELETE COMPANY") {
+        ui->companyNameLineEdit->setReadOnly(true);
+        ui->firstNameLineEdit->setReadOnly(true);
+        ui->lastNameLineEdit->setReadOnly(true);
+        ui->phoneNumberLineEdit->setReadOnly(true);
+    }
 }
 
 // SLOTS
@@ -51,6 +58,13 @@ void AddCustomer::on_applyPushButton_clicked()
         }
         else if(_purpose == "Apply Edits") {
             _mainWindow->editCustomer(customer, _sentCustomer->getCompanyName());
+        }
+        else if (_purpose == "DELETE COMPANY") {
+            QMessageBox::StandardButton answer;
+            answer = QMessageBox::question(this, tr("ARE YOU SURE?"), "DELETE \"" + customer.getCompanyName() + "\" AND ALL ASSOCIATED INVOICES FROM THE DATABASE?\nTHIS CANNOT BE UNDONE", QMessageBox::Yes | QMessageBox::No );
+            if(answer == QMessageBox::Yes) {
+                _mainWindow->deleteCustomer(customer);
+            }
         }
 
     }

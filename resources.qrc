@@ -4,4 +4,7 @@
         <file>resources/delete.png</file>
         <file>resources/update.png</file>
     </qresource>
+    <qresource prefix="/images">
+        <file>resources/aperture_blue.png</file>
+    </qresource>
 </RCC>
